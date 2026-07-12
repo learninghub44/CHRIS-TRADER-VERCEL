@@ -48,7 +48,7 @@ export const API_ENDPOINTS = {
 };
 
 // Production canonical URL
-const CANONICAL_APP_URL = 'https://www.digitprinters.site';
+const CANONICAL_APP_URL = 'https://chris-trader-vercel-digitprinters.vercel.app';
 
 /**
  * Deriv OAuth Configuration

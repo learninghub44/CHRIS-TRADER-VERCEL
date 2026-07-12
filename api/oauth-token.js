@@ -67,7 +67,7 @@ export default async function handler(request, response) {
       process.env.DERIV_OAUTH_REDIRECT_URI ||
       (process.env.VERCEL_URL
         ? `https://${process.env.VERCEL_URL}/auth/callback`
-        : 'https://www.digitprinters.site/auth/callback');
+        : 'https://chris-trader-vercel-digitprinters.vercel.app/auth/callback');
 
     log('OAuth configuration loaded', {
       requestId,

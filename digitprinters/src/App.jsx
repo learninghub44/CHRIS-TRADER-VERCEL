@@ -18,7 +18,7 @@ const Settings = React.lazy(() => import('./pages/Settings'));
 const Callback = React.lazy(() => import('./pages/Callback'));
 const ProtectedRoute = React.lazy(() => import('./components/common/ProtectedRoute'));
 
-const CANONICAL_HOST = 'www.digitprinters.site';
+const CANONICAL_HOST = 'chris-trader-vercel-digitprinters.vercel.app';
 const NON_CANONICAL_HOST = 'digitprinters.site';
 
 const logApp = (msg, data) => {
