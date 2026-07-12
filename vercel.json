@@ -1,6 +1,6 @@
 {
   "buildCommand": "npm run vercel-build",
-  "outputDirectory": "digitprinters/dist",
+  "outputDirectory": "chris-trader/dist",
   "rewrites": [
     {
       "source": "/((?!api/).*)",

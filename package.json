@@ -3,13 +3,13 @@
   "private": true,
   "version": "1.0.0",
   "workspaces": [
-    "digitprinters"
+    "chris-trader"
   ],
   "scripts": {
-    "dev": "cd digitprinters && npm run dev",
-    "build": "cd digitprinters && npm run build",
-    "vercel-build": "cd digitprinters && npm run build",
-    "preview": "cd digitprinters && npm run preview",
-    "lint": "cd digitprinters && npm run lint"
+    "dev": "cd chris-trader && npm run dev",
+    "build": "cd chris-trader && npm run build",
+    "vercel-build": "cd chris-trader && npm run build",
+    "preview": "cd chris-trader && npm run preview",
+    "lint": "cd chris-trader && npm run lint"
   }
 }

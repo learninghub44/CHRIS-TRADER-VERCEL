@@ -17,9 +17,6 @@ const Settings = React.lazy(() => import('./pages/Settings'));
 const Callback = React.lazy(() => import('./pages/Callback'));
 const ProtectedRoute = React.lazy(() => import('./components/common/ProtectedRoute'));
 
-const CANONICAL_HOST = 'chris-trader-vercel-digitprinters.vercel.app';
-const NON_CANONICAL_HOST = 'digitprinters.site';
-
 const logApp = (msg, data) => {
   console.info(`[App] ${msg}`, {
     ...data,
@@ -175,27 +172,11 @@ function App() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    const currentHost = window.location.hostname;
-    const currentPath = window.location.pathname;
-    const currentSearch = window.location.search;
-    const currentHash = window.location.hash;
-
     logApp('App initialized', {
-      hostname: currentHost,
-      pathname: currentPath,
-      isCanonical: currentHost === CANONICAL_HOST,
+      hostname: window.location.hostname,
+      pathname: window.location.pathname,
       userAgent: navigator.userAgent?.substring(0, 100),
     });
-
-    if (currentHost === NON_CANONICAL_HOST && !currentSearch.includes('redirected')) {
-      const separator = currentSearch ? '&' : '?';
-      const destination = `https://${CANONICAL_HOST}${currentPath}${currentSearch}${separator}redirected=1${currentHash}`;
-      logApp('Redirecting to canonical host', {
-        from: currentHost,
-        to: destination,
-      });
-      window.location.replace(destination);
-    }
   }, []);
 
   return <SafeApp />;
