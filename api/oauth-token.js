@@ -1,12 +1,12 @@
 /**
  * OAuth Token Exchange Endpoint
- * Handles Deriv OAuth 2.0 token exchange and refresh
+ * Handles Deriv OAuth 2.0 (PKCE) token exchange and refresh
  * 
  * This backend endpoint:
- * 1. Exchanges authorization code for access token
+ * 1. Exchanges authorization code + code_verifier for an access token (PKCE - no client secret)
  * 2. Handles token refresh with refresh token
  * 3. Validates redirect URIs to prevent mismatches
- * 4. Securely stores client secret (not exposed to client)
+ * 4. Keeps the token exchange server-side, as required by Deriv's OAuth docs
  */
 
 const log = (msg, data) => {
@@ -54,14 +54,13 @@ export default async function handler(request, response) {
 
   try {
     const requestBody = parseRequestBody(request);
-    const { code, grant_type, refresh_token, redirect_uri } = requestBody;
+    const { code, grant_type, refresh_token, redirect_uri, code_verifier } = requestBody;
     
     const clientId =
       process.env.DERIV_OAUTH_CLIENT_ID ||
       process.env.VITE_DERIV_OAUTH_CLIENT_ID ||
       process.env.VITE_DERIV_APP_ID ||
       '33NNVvIyYD0iFQM4vlZJn';
-    const clientSecret = process.env.DERIV_OAUTH_CLIENT_SECRET;
     const redirectUri =
       redirect_uri ||
       process.env.DERIV_OAUTH_REDIRECT_URI ||
@@ -72,7 +71,7 @@ export default async function handler(request, response) {
     log('OAuth configuration loaded', {
       requestId,
       hasClientId: !!clientId,
-      hasClientSecret: !!clientSecret,
+      hasCodeVerifier: !!code_verifier,
       bodyKeys: Object.keys(requestBody),
       hasCode: !!code,
       redirectUri,
@@ -80,11 +79,10 @@ export default async function handler(request, response) {
     });
 
     // Validation checks
-    if (!clientId || !clientSecret) {
+    if (!clientId) {
       logError('OAuth server not properly configured', null, {
         requestId,
         hasClientId: !!clientId,
-        hasClientSecret: !!clientSecret,
       });
       response.status(500).json({ 
         error: 'OAuth server not configured',
@@ -106,6 +104,17 @@ export default async function handler(request, response) {
       return;
     }
 
+    if (!code_verifier && grant_type !== 'refresh_token') {
+      logError('Missing code_verifier for PKCE authorization_code flow', null, {
+        requestId,
+      });
+      response.status(400).json({
+        error: 'Missing code_verifier',
+        code: 'INVALID_REQUEST',
+      });
+      return;
+    }
+
     if (grant_type === 'refresh_token' && !refresh_token) {
       logError('Missing refresh token for refresh_token flow', null, {
         requestId,
@@ -121,7 +130,6 @@ export default async function handler(request, response) {
     const body = new URLSearchParams({
       grant_type: grant_type || 'authorization_code',
       client_id: clientId,
-      client_secret: clientSecret,
       redirect_uri: redirectUri,
     });
 
@@ -133,7 +141,8 @@ export default async function handler(request, response) {
       });
     } else {
       body.append('code', code);
-      log('Preparing authorization_code exchange request', {
+      body.append('code_verifier', code_verifier);
+      log('Preparing authorization_code (PKCE) exchange request', {
         requestId,
         codeLength: code?.length,
         redirectUri,
@@ -143,10 +152,10 @@ export default async function handler(request, response) {
     log('Sending token request to Deriv OAuth endpoint', {
       requestId,
       grantType: grant_type || 'authorization_code',
-      endpoint: 'https://oauth.deriv.com/oauth2/token',
+      endpoint: 'https://auth.deriv.com/oauth2/token',
     });
 
-    const tokenResponse = await fetch('https://oauth.deriv.com/oauth2/token', {
+    const tokenResponse = await fetch('https://auth.deriv.com/oauth2/token', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -207,3 +216,4 @@ export default async function handler(request, response) {
     });
   }
 }
+

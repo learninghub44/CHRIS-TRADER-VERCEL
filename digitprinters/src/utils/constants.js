@@ -55,12 +55,13 @@ const CANONICAL_APP_URL = 'https://chris-trader-vercel-digitprinters.vercel.app'
  * Uses official OAuth 2.0 endpoint with proper scopes and redirect handling
  */
 export const DERIV_OAUTH_CONFIG = {
-  authorize_url: 'https://oauth.deriv.com/oauth2/authorize',
-  token_url: 'https://oauth.deriv.com/oauth2/token',
+  authorize_url: 'https://auth.deriv.com/oauth2/auth',
+  token_url: 'https://auth.deriv.com/oauth2/token',
   client_id: '33NNVvIyYD0iFQM4vlZJn',
   redirect_uri: `${CANONICAL_APP_URL}/auth/callback`,
-  scope: 'read write',
+  scope: 'trade account_manage',
   response_type: 'code',
+  code_challenge_method: 'S256',
 };
 
 /**

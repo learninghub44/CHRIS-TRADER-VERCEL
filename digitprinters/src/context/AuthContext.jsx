@@ -1,13 +1,14 @@
 /**
  * Auth Context
- * Manages Deriv OAuth 2.0 flow and websocket lifecycle
+ * Manages Deriv OAuth 2.0 (PKCE) flow and websocket lifecycle
  * 
  * Flow:
  * 1. User clicks "Login with Deriv"
- * 2. App generates OAuth state and redirects to https://oauth.deriv.com/oauth2/authorize
+ * 2. App generates a code_verifier/code_challenge (PKCE) and OAuth state,
+ *    then redirects to https://auth.deriv.com/oauth2/auth
  * 3. User sees Deriv authorization screen with requested scopes
  * 4. User authorizes and is redirected back to /auth/callback with code
- * 5. Backend exchanges code for access token
+ * 5. Backend exchanges code + code_verifier for access token (no client secret - PKCE)
  * 6. App stores token and connects websocket
  * 7. App authorizes websocket connection with token
  * 8. User sees dashboard with live trading data
@@ -44,6 +45,7 @@ const getPostLoginRedirect = () => localStorage.getItem('deriv_post_login_redire
 const clearStoredAuthState = () => {
   localStorage.removeItem('deriv_oauth_state');
   localStorage.removeItem('deriv_post_login_redirect');
+  sessionStorage.removeItem(PKCE_VERIFIER_KEY);
 };
 
 const generateRandomState = () => {
@@ -56,6 +58,33 @@ const storeAuthState = (state, redirectPath) => {
   localStorage.setItem('deriv_oauth_state', state);
   localStorage.setItem('deriv_post_login_redirect', redirectPath || '/dashboard');
 };
+
+// ==================== PKCE Helpers ====================
+// Deriv's OAuth2 flow (auth.deriv.com) requires PKCE - no client secret is used.
+
+const PKCE_VERIFIER_KEY = 'deriv_pkce_code_verifier';
+
+const base64UrlEncode = (bytes) => {
+  let binary = '';
+  bytes.forEach((b) => { binary += String.fromCharCode(b); });
+  return window.btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+};
+
+const generateCodeVerifier = () => {
+  const array = new Uint8Array(64);
+  window.crypto.getRandomValues(array);
+  return base64UrlEncode(array);
+};
+
+const generateCodeChallenge = async (verifier) => {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(verifier);
+  const digest = await window.crypto.subtle.digest('SHA-256', data);
+  return base64UrlEncode(new Uint8Array(digest));
+};
+
+const storeCodeVerifier = (verifier) => sessionStorage.setItem(PKCE_VERIFIER_KEY, verifier);
+const getStoredCodeVerifier = () => sessionStorage.getItem(PKCE_VERIFIER_KEY);
 
 // ==================== Logging Utilities ====================
 
@@ -521,10 +550,14 @@ export const AuthProvider = ({ children }) => {
     }
   }, [accessToken, addToast, initializeAuthenticatedSession, refreshAccessToken, refreshToken, tokenExpiry]);
 
-  const login = useCallback(() => {
+  const login = useCallback(async () => {
     const state = generateRandomState();
     const redirectPath = window.location.pathname === '/' ? '/dashboard' : window.location.pathname;
     storeAuthState(state, redirectPath);
+
+    const codeVerifier = generateCodeVerifier();
+    const codeChallenge = await generateCodeChallenge(codeVerifier);
+    storeCodeVerifier(codeVerifier);
 
     const oauthParams = new URLSearchParams({
       response_type: DERIV_OAUTH_CONFIG.response_type,
@@ -532,6 +565,8 @@ export const AuthProvider = ({ children }) => {
       redirect_uri: DERIV_OAUTH_CONFIG.redirect_uri,
       scope: DERIV_OAUTH_CONFIG.scope,
       state,
+      code_challenge: codeChallenge,
+      code_challenge_method: DERIV_OAUTH_CONFIG.code_challenge_method,
     });
 
     const oauthUrl = `${DERIV_OAUTH_CONFIG.authorize_url}?${oauthParams.toString()}`;
@@ -656,6 +691,7 @@ export const AuthProvider = ({ children }) => {
           body: JSON.stringify({
             code,
             redirect_uri: DERIV_OAUTH_CONFIG.redirect_uri,
+            code_verifier: getStoredCodeVerifier(),
           }),
         });
 
