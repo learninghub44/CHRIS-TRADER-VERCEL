@@ -1,37 +1,15 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import Button from '../components/common/Button';
-import Logo from '../components/common/Logo';
+import Button from './Button';
+import Logo from './Logo';
+import { useAuth } from '../../context/AuthContext';
 
 // Deriv referral link - only used for Create Account button
 const DERIV_REFERRAL = 'https://partner-tracking.deriv.com/click?a=14252&o=1&c=3&link_id=1';
 
-const logHome = (msg, data) => {
-  console.info(`[Home] ${msg}`, {
-    ...data,
-    timestamp: new Date().toISOString(),
-  });
-};
-
-export default function Home() {
-  const { login, isAuthenticated = false, loading = false } = useAuth() || {};
-  const navigate = useNavigate();
-
-  // Redirect to dashboard if already authenticated
-  useEffect(() => {
-    if (isAuthenticated && !loading) {
-      logHome('User already authenticated, redirecting to dashboard', {});
-      navigate('/dashboard', { replace: true });
-    }
-  }, [isAuthenticated, loading, navigate]);
+export default function AuthGate() {
+  const { login, loading = false } = useAuth() || {};
 
   const handleLoginClick = () => {
-    logHome('Login button clicked', {
-      isAuthenticated,
-      loading,
-    });
-    if (!isAuthenticated && !loading && typeof login === 'function') {
+    if (!loading && typeof login === 'function') {
       login();
     }
   };

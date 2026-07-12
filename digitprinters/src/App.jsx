@@ -8,7 +8,6 @@ const ToastProvider = React.lazy(() => import('./context/ToastContext').then(mod
 const AuthProvider = React.lazy(() => import('./context/AuthContext').then(module => ({ default: module.AuthProvider })));
 const TradingProvider = React.lazy(() => import('./context/TradingContext').then(module => ({ default: module.TradingProvider })));
 const Navbar = React.lazy(() => import('./components/common/Navbar'));
-const Home = React.lazy(() => import('./pages/Home'));
 const Dashboard = React.lazy(() => import('./pages/Dashboard'));
 const Trading = React.lazy(() => import('./pages/Trading'));
 const Bots = React.lazy(() => import('./pages/Bots'));
@@ -77,15 +76,6 @@ function SafeApp() {
                   </Suspense>
                 </ErrorBoundary>
                 <Routes>
-                  {/* Public routes */}
-                  <Route path="/" element={
-                    <ErrorBoundary>
-                      <Suspense fallback={<LoadingFallback />}>
-                        <Home />
-                      </Suspense>
-                    </ErrorBoundary>
-                  } />
-
                   {/* OAuth callback routes - support multiple paths for flexibility */}
                   <Route path="/auth/callback" element={
                     <ErrorBoundary>
@@ -117,6 +107,13 @@ function SafeApp() {
                       </Suspense>
                     </ErrorBoundary>
                   }>
+                    <Route path="/" element={
+                      <ErrorBoundary>
+                        <Suspense fallback={<LoadingFallback />}>
+                          <Dashboard />
+                        </Suspense>
+                      </ErrorBoundary>
+                    } />
                     <Route path="/dashboard" element={
                       <ErrorBoundary>
                         <Suspense fallback={<LoadingFallback />}>

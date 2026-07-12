@@ -1,5 +1,6 @@
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import LoadingSpinner from './LoadingSpinner';
+import AuthGate from './AuthGate';
 import { useAuth } from '../../context/AuthContext';
 
 const logProtectedRoute = (msg, data) => {
@@ -39,9 +40,10 @@ export default function ProtectedRoute() {
     return <LoadingSpinner fullScreen message={initializationStep || 'Connecting to markets...'} />;
   }
 
-  // Redirect to home if not authenticated
+  // Show login gate if not authenticated (rendered inline, no redirect,
+  // since '/' itself is now a protected route and would otherwise loop)
   if (!isAuthenticated) {
-    logProtectedRoute('User not authenticated, redirecting to home', {
+    logProtectedRoute('User not authenticated, showing login gate', {
       path: location.pathname,
       loginStatus,
       attemptedPath: location.pathname,
@@ -53,7 +55,7 @@ export default function ProtectedRoute() {
     } catch (err) {
       console.warn('[ProtectedRoute] Failed to set post-login redirect:', err);
     }
-    return <Navigate to="/" replace />;
+    return <AuthGate />;
   }
 
   logProtectedRoute('Access granted to protected route', {
