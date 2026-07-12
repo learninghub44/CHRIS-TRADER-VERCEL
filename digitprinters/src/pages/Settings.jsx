@@ -8,7 +8,7 @@ export default function Settings() {
         <div className="mb-8 rounded-[28px] border border-slate-800 bg-slate-900/80 p-10 shadow-glow">
           <h1 className="text-3xl font-semibold tracking-tight text-white">Settings</h1>
           <p className="mt-3 max-w-2xl text-slate-400">
-            Manage your DigitPrinters preferences, security, and Deriv integration settings from one place.
+            Manage your Chris Tech preferences, security, and Deriv integration settings from one place.
           </p>
         </div>
 

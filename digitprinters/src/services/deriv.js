@@ -1,5 +1,5 @@
 // Legacy Deriv websocket app id used only for websocket connectivity and market subscriptions
-const DERIV_APP_ID = '134275';
+const DERIV_APP_ID = '33NNVvIyYD0iFQM4vlZJn';
 const DERIV_WS_URL = `wss://ws.derivws.com/websockets/v3?app_id=${DERIV_APP_ID}`;
 
 // ==================== Logging Utilities ====================

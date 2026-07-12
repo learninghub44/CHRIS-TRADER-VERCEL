@@ -1,6 +1,6 @@
 /**
  * Firebase Configuration
- * Initialize Firebase services for DigitPrinters
+ * Initialize Firebase services for Chris Tech
  */
 
 import { initializeApp } from 'firebase/app';

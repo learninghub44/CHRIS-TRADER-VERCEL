@@ -1,8 +1,8 @@
-# DigitPrinters - Advanced Trading Platform
+# Chris Tech - Advanced Trading Platform
 
 A modern, professional third-party trading platform built with React, Vite, TailwindCSS, and Firebase. Connects to Deriv via WebSocket API for real-time trading data.
 
-**Important:** This is NOT a broker. All deposits and withdrawals remain on Deriv. DigitPrinters is a trading interface powered by Deriv technology.
+**Important:** This is NOT a broker. All deposits and withdrawals remain on Deriv. Chris Tech is a trading interface powered by Deriv technology.
 
 ## 🚀 Features
 
@@ -173,7 +173,7 @@ src/
 
 ## ⚠️ Disclaimer
 
-DigitPrinters is NOT a regulated financial broker. This is a trading interface for Deriv. Trading involves substantial risk of loss. Not suitable for all investors. Please trade responsibly.
+Chris Tech is NOT a regulated financial broker. This is a trading interface for Deriv. Trading involves substantial risk of loss. Not suitable for all investors. Please trade responsibly.
 
 ---
 

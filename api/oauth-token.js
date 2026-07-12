@@ -60,7 +60,7 @@ export default async function handler(request, response) {
       process.env.DERIV_OAUTH_CLIENT_ID ||
       process.env.VITE_DERIV_OAUTH_CLIENT_ID ||
       process.env.VITE_DERIV_APP_ID ||
-      '332LK4VWd9A4pEEfTMn53';
+      '33NNVvIyYD0iFQM4vlZJn';
     const clientSecret = process.env.DERIV_OAUTH_CLIENT_SECRET;
     const redirectUri =
       redirect_uri ||

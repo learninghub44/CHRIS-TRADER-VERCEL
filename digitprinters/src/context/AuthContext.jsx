@@ -162,7 +162,7 @@ export const AuthProvider = ({ children }) => {
 
     logOAuth('Starting authenticated trading session initialization', {
       reason,
-      websocketUrl: 'wss://ws.derivws.com/websockets/v3?app_id=134275',
+      websocketUrl: 'wss://ws.derivws.com/websockets/v3?app_id=33NNVvIyYD0iFQM4vlZJn',
       timestamp: new Date().toISOString(),
     });
 

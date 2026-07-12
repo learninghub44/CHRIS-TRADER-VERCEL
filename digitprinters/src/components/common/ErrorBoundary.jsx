@@ -27,7 +27,7 @@ class ErrorBoundary extends React.Component {
               <div className="text-red-400 text-6xl mb-4">⚠️</div>
               <h1 className="text-xl font-bold text-red-400 mb-2">Application Error</h1>
               <p className="text-slate-300 mb-4">
-                Something went wrong while loading DigitPrinters. This is usually temporary.
+                Something went wrong while loading Chris Tech. This is usually temporary.
               </p>
               <button
                 onClick={() => window.location.reload()}

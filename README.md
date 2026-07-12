@@ -1,2 +1,2 @@
-# digitprinters.site
+# Chris Trader Vercel
 deriv app

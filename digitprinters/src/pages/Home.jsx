@@ -50,7 +50,7 @@ export default function Home() {
             </div>
 
             <div className="space-y-6">
-              <p className="text-sm uppercase tracking-[0.35em] text-cyan-300/80">DigitPrinters</p>
+              <p className="text-sm uppercase tracking-[0.35em] text-cyan-300/80">Chris Tech</p>
               <h1 className="text-4xl font-black tracking-tight text-white sm:text-5xl lg:text-6xl">
                 Trade Synthetic Markets Smarter
               </h1>
